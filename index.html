@@ -311,7 +311,19 @@
             font-size: 17px;
             color: var(--accent);
             font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .answer-phase {
+            font-size: 15px;
+            color: var(--text-secondary);
             margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .answer-phase.highlight {
+            color: var(--success);
+            font-weight: 500;
         }
 
         /* Timer */
@@ -981,6 +993,7 @@
                             <div class="price-value" id="priceValue">$0.00</div>
                         </div>
                         <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
+                        <div class="answer-phase" id="answerPhase">Enter the tip amount</div>
 
                         <!-- Timer -->
                         <div class="timer-display running" id="timerDisplay">0.00s</div>
@@ -1146,7 +1159,9 @@
         let mode = 'free';
         let currentPrice = 0;
         let currentTip = 0;
-        let correctAnswer = 0;
+        let correctTipAmount = 0;
+        let correctTotalAmount = 0;
+        let answerPhase = 'tip'; // 'tip' or 'total'
         let correctCount = 0;
         let incorrectCount = 0;
         let answered = false;
@@ -1402,23 +1417,27 @@
         // Generate question
         function generateQuestion() {
             answered = false;
+            answerPhase = 'tip';
             feedback.classList.remove('show');
             answerInput.value = '';
             answerInput.classList.remove('correct', 'incorrect');
             mcOptions.forEach(opt => opt.classList.remove('correct', 'incorrect', 'reveal-correct'));
             submitBtn.textContent = 'Check Answer';
             submitBtn.disabled = false;
+            document.getElementById('answerPhase').textContent = 'Enter the tip amount';
+            document.getElementById('answerPhase').classList.remove('highlight');
 
             // Random price between $5 and $150
             currentPrice = Math.floor(Math.random() * 14600 + 500) / 100;
             currentTip = selectedTips[Math.floor(Math.random() * selectedTips.length)];
-            correctAnswer = Math.round(currentPrice * currentTip) / 100;
+            correctTipAmount = Math.round(currentPrice * currentTip) / 100;
+            correctTotalAmount = Math.round((currentPrice + correctTipAmount) * 100) / 100;
 
             priceValue.textContent = '$' + currentPrice.toFixed(2);
             tipPercentDisplay.textContent = `Calculate ${currentTip}% tip`;
 
             if (mode === 'mc') {
-                generateMCOptions();
+                generateMCOptions('tip');
             }
 
             startTimer();
@@ -1428,7 +1447,8 @@
             }
         }
 
-        function generateMCOptions() {
+        function generateMCOptions(phase) {
+            const correctAnswer = phase === 'tip' ? correctTipAmount : correctTotalAmount;
             const options = [correctAnswer];
 
             while (options.length < 4) {
@@ -1479,43 +1499,106 @@
         });
 
         async function checkAnswer(userAnswer, mcElement = null) {
-            answered = true;
-            stopTimer();
-
+            const correctAnswer = answerPhase === 'tip' ? correctTipAmount : correctTotalAmount;
             const isCorrect = Math.abs(userAnswer - correctAnswer) < 0.01;
 
-            if (isCorrect) {
-                correctCount++;
-                correctCountEl.textContent = correctCount;
-                feedback.textContent = `Correct! (${(elapsedTime / 1000).toFixed(2)}s)`;
-                feedback.className = 'feedback show correct';
+            if (answerPhase === 'tip') {
+                if (isCorrect) {
+                    // Correct tip - transition to total phase
+                    answerPhase = 'total';
+                    document.getElementById('answerPhase').textContent = 'Now enter the total amount';
+                    document.getElementById('answerPhase').classList.add('highlight');
 
-                if (mode === 'free') {
-                    answerInput.classList.add('correct');
-                } else if (mcElement) {
-                    mcElement.classList.add('correct');
+                    if (mode === 'free') {
+                        answerInput.value = '';
+                        answerInput.classList.remove('correct', 'incorrect');
+                        answerInput.focus();
+                    } else {
+                        mcOptions.forEach(opt => opt.classList.remove('correct', 'incorrect', 'reveal-correct'));
+                        if (mcElement) mcElement.classList.add('correct');
+                        setTimeout(() => {
+                            mcOptions.forEach(opt => opt.classList.remove('correct'));
+                            generateMCOptions('total');
+                        }, 500);
+                    }
+                } else {
+                    // Incorrect tip - fail the question
+                    answered = true;
+                    stopTimer();
+                    incorrectCount++;
+                    incorrectCountEl.textContent = incorrectCount;
+                    feedback.textContent = `Incorrect. The tip was $${correctTipAmount.toFixed(2)}`;
+                    feedback.className = 'feedback show incorrect';
+
+                    if (mode === 'free') {
+                        answerInput.classList.add('incorrect');
+                    } else if (mcElement) {
+                        mcElement.classList.add('incorrect');
+                        mcOptions.forEach(opt => {
+                            if (Math.abs(parseFloat(opt.dataset.value) - correctTipAmount) < 0.01) {
+                                opt.classList.add('reveal-correct');
+                            }
+                        });
+                    }
+
+                    submitBtn.textContent = 'Next Question';
+                    saveAttempt(false);
+
+                    if (mode === 'mc') {
+                        setTimeout(() => {
+                            if (answered) generateQuestion();
+                        }, 1500);
+                    }
                 }
             } else {
-                incorrectCount++;
-                incorrectCountEl.textContent = incorrectCount;
-                feedback.textContent = `Incorrect. The answer was $${correctAnswer.toFixed(2)}`;
-                feedback.className = 'feedback show incorrect';
+                // Total phase
+                answered = true;
+                stopTimer();
 
-                if (mode === 'free') {
-                    answerInput.classList.add('incorrect');
-                } else if (mcElement) {
-                    mcElement.classList.add('incorrect');
-                    mcOptions.forEach(opt => {
-                        if (Math.abs(parseFloat(opt.dataset.value) - correctAnswer) < 0.01) {
-                            opt.classList.add('reveal-correct');
-                        }
-                    });
+                if (isCorrect) {
+                    correctCount++;
+                    correctCountEl.textContent = correctCount;
+                    feedback.textContent = `Correct! (${(elapsedTime / 1000).toFixed(2)}s)`;
+                    feedback.className = 'feedback show correct';
+
+                    if (mode === 'free') {
+                        answerInput.classList.add('correct');
+                    } else if (mcElement) {
+                        mcElement.classList.add('correct');
+                    }
+
+                    saveAttempt(true);
+                } else {
+                    incorrectCount++;
+                    incorrectCountEl.textContent = incorrectCount;
+                    feedback.textContent = `Incorrect. The total was $${correctTotalAmount.toFixed(2)}`;
+                    feedback.className = 'feedback show incorrect';
+
+                    if (mode === 'free') {
+                        answerInput.classList.add('incorrect');
+                    } else if (mcElement) {
+                        mcElement.classList.add('incorrect');
+                        mcOptions.forEach(opt => {
+                            if (Math.abs(parseFloat(opt.dataset.value) - correctTotalAmount) < 0.01) {
+                                opt.classList.add('reveal-correct');
+                            }
+                        });
+                    }
+
+                    saveAttempt(false);
+                }
+
+                submitBtn.textContent = 'Next Question';
+
+                if (mode === 'mc') {
+                    setTimeout(() => {
+                        if (answered) generateQuestion();
+                    }, 1500);
                 }
             }
+        }
 
-            submitBtn.textContent = 'Next Question';
-
-            // Save attempt to Firestore if logged in
+        async function saveAttempt(isCorrect) {
             if (currentUser && username) {
                 try {
                     await db.collection('attempts').add({
@@ -1530,12 +1613,6 @@
                 } catch (error) {
                     console.error('Error saving attempt:', error);
                 }
-            }
-
-            if (mode === 'mc') {
-                setTimeout(() => {
-                    if (answered) generateQuestion();
-                }, 1500);
             }
         }
 
