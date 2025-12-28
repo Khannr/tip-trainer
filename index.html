@@ -291,28 +291,9 @@
             text-align: center;
         }
 
-        .tip-percentage-display {
-            font-size: 17px;
-            color: var(--accent);
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .answer-phase {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            transition: all 0.2s;
-        }
-
-        .answer-phase.highlight {
-            color: var(--success);
-            font-weight: 500;
-        }
-
         /* Receipt */
         .receipt {
-            background: #fffef8;
+            background: #ffffff;
             border-radius: 4px;
             padding: 20px 24px;
             margin-bottom: 16px;
@@ -322,7 +303,7 @@
                 0 1px 3px rgba(0,0,0,0.08),
                 0 8px 20px rgba(0,0,0,0.04);
             position: relative;
-            border: 1px solid #e8e4d9;
+            border: 1px solid #ddd;
         }
 
         .receipt::before,
@@ -332,8 +313,8 @@
             left: 0;
             right: 0;
             height: 8px;
-            background: linear-gradient(135deg, #fffef8 33.33%, transparent 33.33%, transparent 66.66%, #fffef8 66.66%),
-                        linear-gradient(-135deg, #fffef8 33.33%, transparent 33.33%, transparent 66.66%, #fffef8 66.66%);
+            background: linear-gradient(135deg, #ffffff 33.33%, transparent 33.33%, transparent 66.66%, #ffffff 66.66%),
+                        linear-gradient(-135deg, #ffffff 33.33%, transparent 33.33%, transparent 66.66%, #ffffff 66.66%);
             background-size: 12px 20px;
         }
 
@@ -417,6 +398,77 @@
             margin: 0 8px 4px 8px;
         }
 
+        .receipt-value {
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .receipt-input-wrapper {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .receipt-input-prefix {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .receipt-input {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid currentColor;
+            width: 55px;
+            text-align: right;
+            outline: none;
+            padding: 2px 0;
+            -moz-appearance: textfield;
+        }
+
+        .receipt-input::-webkit-outer-spin-button,
+        .receipt-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .receipt-input::placeholder {
+            color: inherit;
+            opacity: 0.5;
+        }
+
+        .receipt-input:focus {
+            border-bottom-color: var(--accent);
+        }
+
+        .receipt-blank {
+            opacity: 0.5;
+        }
+
+        .receipt-filled {
+            /* shown when answer is filled */
+        }
+
+        .receipt-timer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .timer-value {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .timer-value.stopped {
+            color: var(--success);
+        }
+
         .receipt-signature {
             margin-top: 20px;
             padding-top: 16px;
@@ -483,70 +535,6 @@
 
         .receipt-barcode-visual span:nth-child(3n) {
             width: 3px;
-        }
-
-        /* Timer */
-        .timer-display {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .timer-display.running {
-            color: var(--accent);
-        }
-
-        .timer-display.stopped {
-            color: var(--success);
-        }
-
-        /* Free Response Input */
-        .answer-input-container {
-            margin-bottom: 16px;
-        }
-
-        .answer-input-wrapper {
-            position: relative;
-            max-width: 200px;
-            margin: 0 auto;
-        }
-
-        .answer-input-wrapper .prefix {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            color: var(--text-secondary);
-        }
-
-        .answer-input {
-            width: 100%;
-            padding: 16px 16px 16px 36px;
-            font-size: 24px;
-            font-weight: 500;
-            text-align: center;
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            outline: none;
-            transition: border-color 0.2s;
-            -webkit-appearance: none;
-        }
-
-        .answer-input:focus {
-            border-color: var(--accent);
-        }
-
-        .answer-input.correct {
-            border-color: var(--success);
-            background: rgba(52, 199, 89, 0.08);
-        }
-
-        .answer-input.incorrect {
-            border-color: var(--error);
-            background: rgba(255, 59, 48, 0.08);
         }
 
         /* Multiple Choice Options */
@@ -1169,15 +1157,34 @@
                                 <span class="dots"></span>
                                 <span id="receiptSubtotal">$0.00</span>
                             </div>
-                            <div class="receipt-row tip-row hidden" id="receiptTipRow">
+                            <div class="receipt-row tip-row" id="receiptTipRow">
                                 <span>Tip (<span id="receiptTipPercent">20</span>%)</span>
                                 <span class="dots"></span>
-                                <span id="receiptTip">$0.00</span>
+                                <span class="receipt-value" id="receiptTip">
+                                    <span class="receipt-input-wrapper" id="tipInputWrapper">
+                                        <span class="receipt-input-prefix">$</span>
+                                        <input type="number" class="receipt-input" id="tipInput" placeholder="_.__ " step="0.01" inputmode="decimal">
+                                    </span>
+                                    <span class="receipt-filled hidden" id="tipFilled">$0.00</span>
+                                </span>
                             </div>
-                            <div class="receipt-row total-row hidden" id="receiptTotalRow">
+                            <div class="receipt-row total-row" id="receiptTotalRow">
                                 <span>TOTAL</span>
                                 <span class="dots"></span>
-                                <span id="receiptTotal">$0.00</span>
+                                <span class="receipt-value" id="receiptTotal">
+                                    <span class="receipt-input-wrapper hidden" id="totalInputWrapper">
+                                        <span class="receipt-input-prefix">$</span>
+                                        <input type="number" class="receipt-input" id="totalInput" placeholder="_.__ " step="0.01" inputmode="decimal">
+                                    </span>
+                                    <span class="receipt-blank" id="totalBlank">$_.__ </span>
+                                    <span class="receipt-filled hidden" id="totalFilled">$0.00</span>
+                                </span>
+                            </div>
+
+                            <!-- Timer on receipt -->
+                            <div class="receipt-timer" id="receiptTimer">
+                                <span class="timer-label">Time:</span>
+                                <span class="timer-value" id="timerDisplay">0.00s</span>
                             </div>
 
                             <div class="receipt-signature">
@@ -1200,21 +1207,8 @@
                                 <div class="receipt-merchant">*** MERCHANT COPY ***</div>
                             </div>
                         </div>
-                        <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
-                        <div class="answer-phase" id="answerPhase">Enter the tip amount</div>
 
-                        <!-- Timer -->
-                        <div class="timer-display running" id="timerDisplay">0.00s</div>
-
-                        <!-- Free Response -->
-                        <div class="answer-input-container" id="freeResponseArea">
-                            <div class="answer-input-wrapper">
-                                <span class="prefix">$</span>
-                                <input type="number" class="answer-input" id="answerInput" placeholder="0.00" step="0.01" inputmode="decimal">
-                            </div>
-                        </div>
-
-                        <!-- Multiple Choice -->
+                        <!-- Multiple Choice (below receipt) -->
                         <div class="mc-options hidden" id="mcArea">
                             <button class="mc-option" data-index="0">$0.00</button>
                             <button class="mc-option" data-index="1">$0.00</button>
@@ -1222,7 +1216,7 @@
                             <button class="mc-option" data-index="3">$0.00</button>
                         </div>
 
-                        <button class="submit-btn" id="submitBtn">Check Answer</button>
+                        <button class="submit-btn hidden" id="submitBtn">Next Question</button>
 
                         <div class="feedback" id="feedback"></div>
 
@@ -1386,10 +1380,14 @@
         const startScreen = document.getElementById('startScreen');
         const quizActive = document.getElementById('quizActive');
         const startBtn = document.getElementById('startBtn');
-        const tipPercentDisplay = document.getElementById('tipPercentDisplay');
-        const freeResponseArea = document.getElementById('freeResponseArea');
         const mcArea = document.getElementById('mcArea');
-        const answerInput = document.getElementById('answerInput');
+        const tipInput = document.getElementById('tipInput');
+        const totalInput = document.getElementById('totalInput');
+        const tipInputWrapper = document.getElementById('tipInputWrapper');
+        const totalInputWrapper = document.getElementById('totalInputWrapper');
+        const tipFilled = document.getElementById('tipFilled');
+        const totalFilled = document.getElementById('totalFilled');
+        const totalBlank = document.getElementById('totalBlank');
         const mcOptions = document.querySelectorAll('.mc-option');
         const submitBtn = document.getElementById('submitBtn');
         const feedback = document.getElementById('feedback');
@@ -1626,17 +1624,19 @@
             answered = false;
             answerPhase = 'tip';
             feedback.classList.remove('show');
-            answerInput.value = '';
-            answerInput.classList.remove('correct', 'incorrect');
             mcOptions.forEach(opt => opt.classList.remove('correct', 'incorrect', 'reveal-correct'));
-            submitBtn.textContent = 'Check Answer';
-            submitBtn.disabled = false;
-            document.getElementById('answerPhase').textContent = 'Enter the tip amount';
-            document.getElementById('answerPhase').classList.remove('highlight');
+            submitBtn.classList.add('hidden');
 
-            // Reset receipt
-            document.getElementById('receiptTipRow').classList.add('hidden');
-            document.getElementById('receiptTotalRow').classList.add('hidden');
+            // Reset receipt inputs
+            tipInput.value = '';
+            totalInput.value = '';
+            tipInputWrapper.classList.remove('hidden');
+            tipFilled.classList.add('hidden');
+            totalInputWrapper.classList.add('hidden');
+            totalBlank.classList.remove('hidden');
+            totalFilled.classList.add('hidden');
+            timerDisplay.classList.remove('stopped');
+            timerDisplay.classList.add('running');
 
             // Random price between $5 and $150
             currentPrice = Math.floor(Math.random() * 14600 + 500) / 100;
@@ -1654,22 +1654,22 @@
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             document.getElementById('receiptDate').textContent = `${dateStr}  ${timeStr}`;
 
-            // Randomize receipt details
-            const servers = ['Alex', 'Jordan', 'Sam', 'Taylor', 'Casey', 'Morgan', 'Riley', 'Jamie'];
-            document.getElementById('receiptServer').textContent = servers[Math.floor(Math.random() * servers.length)];
-            document.getElementById('receiptTable').textContent = Math.floor(Math.random() * 30) + 1;
-            document.getElementById('receiptCheck').textContent = '#' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
-
-            tipPercentDisplay.textContent = `Calculate ${currentTip}% tip`;
+            // Set receipt details (static per user request)
+            document.getElementById('receiptServer').textContent = 'Connor';
+            document.getElementById('receiptTable').textContent = '13';
+            document.getElementById('receiptCheck').textContent = '#6767';
 
             if (mode === 'mc') {
                 generateMCOptions('tip');
+                mcArea.classList.remove('hidden');
+            } else {
+                mcArea.classList.add('hidden');
             }
 
             startTimer();
 
             if (mode === 'free') {
-                answerInput.focus();
+                tipInput.focus();
             }
         }
 
@@ -1694,37 +1694,45 @@
             });
         }
 
-        // Submit answer
+        // Submit button (for next question)
         submitBtn.addEventListener('click', () => {
-            if (answered) {
-                generateQuestion();
-                return;
-            }
-
-            const userAnswer = parseFloat(answerInput.value);
-            if (isNaN(userAnswer)) {
-                answerInput.focus();
-                return;
-            }
-
-            checkAnswer(userAnswer);
+            generateQuestion();
         });
 
-        answerInput.addEventListener('keypress', (e) => {
+        // Tip input handlers
+        tipInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                submitBtn.click();
+                const userAnswer = parseFloat(tipInput.value);
+                if (!isNaN(userAnswer)) {
+                    checkAnswer(userAnswer);
+                }
             }
         });
 
-        // Auto-submit on correct answer (free response only)
-        answerInput.addEventListener('input', () => {
-            if (answered || mode !== 'free') return;
-
-            const userAnswer = parseFloat(answerInput.value);
+        tipInput.addEventListener('input', () => {
+            if (answered || mode !== 'free' || answerPhase !== 'tip') return;
+            const userAnswer = parseFloat(tipInput.value);
             if (isNaN(userAnswer)) return;
+            if (Math.abs(userAnswer - correctTipAmount) < 0.01) {
+                checkAnswer(userAnswer);
+            }
+        });
 
-            const correctAnswer = answerPhase === 'tip' ? correctTipAmount : correctTotalAmount;
-            if (Math.abs(userAnswer - correctAnswer) < 0.01) {
+        // Total input handlers
+        totalInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const userAnswer = parseFloat(totalInput.value);
+                if (!isNaN(userAnswer)) {
+                    checkAnswer(userAnswer);
+                }
+            }
+        });
+
+        totalInput.addEventListener('input', () => {
+            if (answered || mode !== 'free' || answerPhase !== 'total') return;
+            const userAnswer = parseFloat(totalInput.value);
+            if (isNaN(userAnswer)) return;
+            if (Math.abs(userAnswer - correctTotalAmount) < 0.01) {
                 checkAnswer(userAnswer);
             }
         });
@@ -1745,17 +1753,18 @@
                 if (isCorrect) {
                     // Correct tip - transition to total phase
                     answerPhase = 'total';
-                    document.getElementById('answerPhase').textContent = 'Now enter the total amount';
-                    document.getElementById('answerPhase').classList.add('highlight');
 
-                    // Show tip on receipt
-                    document.getElementById('receiptTip').textContent = '$' + correctTipAmount.toFixed(2);
-                    document.getElementById('receiptTipRow').classList.remove('hidden');
+                    // Show filled tip on receipt, hide input
+                    tipFilled.textContent = '$' + correctTipAmount.toFixed(2);
+                    tipInputWrapper.classList.add('hidden');
+                    tipFilled.classList.remove('hidden');
+
+                    // Show total input
+                    totalBlank.classList.add('hidden');
+                    totalInputWrapper.classList.remove('hidden');
 
                     if (mode === 'free') {
-                        answerInput.value = '';
-                        answerInput.classList.remove('correct', 'incorrect');
-                        answerInput.focus();
+                        totalInput.focus();
                     } else {
                         mcOptions.forEach(opt => opt.classList.remove('correct', 'incorrect', 'reveal-correct'));
                         if (mcElement) mcElement.classList.add('correct');
@@ -1773,9 +1782,12 @@
                     feedback.textContent = `Incorrect. The tip was $${correctTipAmount.toFixed(2)}`;
                     feedback.className = 'feedback show incorrect';
 
-                    if (mode === 'free') {
-                        answerInput.classList.add('incorrect');
-                    } else if (mcElement) {
+                    // Show correct tip
+                    tipFilled.textContent = '$' + correctTipAmount.toFixed(2);
+                    tipInputWrapper.classList.add('hidden');
+                    tipFilled.classList.remove('hidden');
+
+                    if (mcElement) {
                         mcElement.classList.add('incorrect');
                         mcOptions.forEach(opt => {
                             if (Math.abs(parseFloat(opt.dataset.value) - correctTipAmount) < 0.01) {
@@ -1784,7 +1796,7 @@
                         });
                     }
 
-                    submitBtn.textContent = 'Next Question';
+                    submitBtn.classList.remove('hidden');
                     saveAttempt(false);
 
                     if (mode === 'mc') {
@@ -1798,19 +1810,18 @@
                 answered = true;
                 stopTimer();
 
+                // Show filled total on receipt
+                totalFilled.textContent = '$' + correctTotalAmount.toFixed(2);
+                totalInputWrapper.classList.add('hidden');
+                totalFilled.classList.remove('hidden');
+
                 if (isCorrect) {
                     correctCount++;
                     correctCountEl.textContent = correctCount;
                     feedback.textContent = `Correct! (${(elapsedTime / 1000).toFixed(2)}s)`;
                     feedback.className = 'feedback show correct';
 
-                    // Show total on receipt
-                    document.getElementById('receiptTotal').textContent = '$' + correctTotalAmount.toFixed(2);
-                    document.getElementById('receiptTotalRow').classList.remove('hidden');
-
-                    if (mode === 'free') {
-                        answerInput.classList.add('correct');
-                    } else if (mcElement) {
+                    if (mcElement) {
                         mcElement.classList.add('correct');
                     }
 
@@ -1821,13 +1832,7 @@
                     feedback.textContent = `Incorrect. The total was $${correctTotalAmount.toFixed(2)}`;
                     feedback.className = 'feedback show incorrect';
 
-                    // Show correct total on receipt
-                    document.getElementById('receiptTotal').textContent = '$' + correctTotalAmount.toFixed(2);
-                    document.getElementById('receiptTotalRow').classList.remove('hidden');
-
-                    if (mode === 'free') {
-                        answerInput.classList.add('incorrect');
-                    } else if (mcElement) {
+                    if (mcElement) {
                         mcElement.classList.add('incorrect');
                         mcOptions.forEach(opt => {
                             if (Math.abs(parseFloat(opt.dataset.value) - correctTotalAmount) < 0.01) {
@@ -1839,7 +1844,7 @@
                     saveAttempt(false);
                 }
 
-                submitBtn.textContent = 'Next Question';
+                submitBtn.classList.remove('hidden');
 
                 if (mode === 'mc') {
                     setTimeout(() => {
