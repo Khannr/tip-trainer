@@ -45,7 +45,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         h1 {
@@ -58,6 +58,93 @@
         .subtitle {
             color: var(--text-secondary);
             font-size: 15px;
+        }
+
+        /* Auth Header */
+        .auth-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            min-height: 36px;
+        }
+
+        .user-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .user-info strong {
+            color: var(--text-primary);
+        }
+
+        .auth-btn {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 980px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .auth-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .auth-btn.secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .auth-btn.secondary:hover {
+            background: #e8e8ed;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .nav-tab:not(.active):hover {
+            background: var(--bg-primary);
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
         }
 
         .card {
@@ -224,7 +311,24 @@
             font-size: 17px;
             color: var(--accent);
             font-weight: 500;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
+        }
+
+        /* Timer */
+        .timer-display {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-display.running {
+            color: var(--accent);
+        }
+
+        .timer-display.stopped {
+            color: var(--success);
         }
 
         /* Free Response Input */
@@ -474,6 +578,304 @@
             opacity: 1;
         }
 
+        /* Auth Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .modal-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+        }
+
+        .form-error {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        .modal-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .modal-submit:hover {
+            background: var(--accent-hover);
+        }
+
+        .modal-submit:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Stats View */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stats-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stats-card.full-width {
+            grid-column: span 2;
+        }
+
+        .stats-card-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stats-card-value.accent {
+            color: var(--accent);
+        }
+
+        .stats-card-value.success {
+            color: var(--success);
+        }
+
+        .stats-card-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .stats-breakdown {
+            margin-top: 16px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-row:last-child {
+            border-bottom: none;
+        }
+
+        .stats-row-label {
+            font-weight: 500;
+        }
+
+        .stats-row-value {
+            color: var(--text-secondary);
+        }
+
+        /* Leaderboard View */
+        .leaderboard-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .filter-btn {
+            padding: 10px 16px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: 980px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .filter-btn:not(.active):hover {
+            background: #e8e8ed;
+        }
+
+        .leaderboard-list {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-rank {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+
+        .leaderboard-rank.gold {
+            background: #ffd700;
+            color: #000;
+        }
+
+        .leaderboard-rank.silver {
+            background: #c0c0c0;
+            color: #000;
+        }
+
+        .leaderboard-rank.bronze {
+            background: #cd7f32;
+            color: #fff;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: 500;
+        }
+
+        .leaderboard-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .leaderboard-time {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
         /* Responsive */
         @media (max-width: 380px) {
             .price-value {
@@ -498,116 +900,259 @@
 </head>
 <body>
     <div class="container">
+        <!-- Auth Header -->
+        <div class="auth-header">
+            <div class="user-info hidden" id="userInfo">
+                <strong id="usernameDisplay"></strong>
+            </div>
+            <button class="auth-btn" id="loginBtn">Sign In</button>
+            <button class="auth-btn secondary hidden" id="logoutBtn">Sign Out</button>
+        </div>
+
         <header>
             <h1>Tip Trainer</h1>
             <p class="subtitle">Practice calculating tips</p>
         </header>
 
-        <!-- Settings Card -->
-        <div class="card">
-            <div class="card-title">Tip Percentages</div>
-            <div class="tip-options">
-                <label class="tip-option selected" data-tip="10">
-                    <input type="checkbox" value="10" checked>
-                    10%
-                </label>
-                <label class="tip-option selected" data-tip="15">
-                    <input type="checkbox" value="15" checked>
-                    15%
-                </label>
-                <label class="tip-option selected" data-tip="20">
-                    <input type="checkbox" value="20" checked>
-                    20%
-                </label>
-                <label class="tip-option selected" data-tip="25">
-                    <input type="checkbox" value="25" checked>
-                    25%
-                </label>
-            </div>
-            <div class="custom-tip-container">
-                <div class="custom-tip-row">
-                    <div class="custom-input-wrapper">
-                        <input type="number" id="customTipInput" placeholder="Custom" min="1" max="100">
-                        <span class="suffix">%</span>
-                    </div>
-                    <button class="add-custom-btn" id="addCustomBtn">Add</button>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-view="practice">Practice</button>
+            <button class="nav-tab" data-view="stats">Stats</button>
+            <button class="nav-tab" data-view="leaderboard">Leaderboard</button>
+        </div>
+
+        <!-- Practice View -->
+        <div class="view active" id="practiceView">
+            <!-- Settings Card -->
+            <div class="card">
+                <div class="card-title">Tip Percentages</div>
+                <div class="tip-options">
+                    <label class="tip-option selected" data-tip="10">
+                        <input type="checkbox" value="10" checked>
+                        10%
+                    </label>
+                    <label class="tip-option selected" data-tip="15">
+                        <input type="checkbox" value="15" checked>
+                        15%
+                    </label>
+                    <label class="tip-option selected" data-tip="20">
+                        <input type="checkbox" value="20" checked>
+                        20%
+                    </label>
+                    <label class="tip-option selected" data-tip="25">
+                        <input type="checkbox" value="25" checked>
+                        25%
+                    </label>
                 </div>
-                <div class="custom-tips-display" id="customTipsDisplay"></div>
+                <div class="custom-tip-container">
+                    <div class="custom-tip-row">
+                        <div class="custom-input-wrapper">
+                            <input type="number" id="customTipInput" placeholder="Custom" min="1" max="100">
+                            <span class="suffix">%</span>
+                        </div>
+                        <button class="add-custom-btn" id="addCustomBtn">Add</button>
+                    </div>
+                    <div class="custom-tips-display" id="customTipsDisplay"></div>
+                </div>
+            </div>
+
+            <!-- Mode Card -->
+            <div class="card">
+                <div class="card-title">Answer Mode</div>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" data-mode="free">Free Response</button>
+                    <button class="mode-btn" data-mode="mc">Multiple Choice</button>
+                </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div class="card">
+                <div class="quiz-area">
+                    <!-- Start Screen -->
+                    <div class="start-screen" id="startScreen">
+                        <p>Select your tip percentages above and start practicing!</p>
+                        <button class="start-btn" id="startBtn">Start Practice</button>
+                    </div>
+
+                    <!-- Active Quiz -->
+                    <div class="hidden" id="quizActive">
+                        <div class="price-display">
+                            <div class="price-label">Bill Total</div>
+                            <div class="price-value" id="priceValue">$0.00</div>
+                        </div>
+                        <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
+
+                        <!-- Timer -->
+                        <div class="timer-display running" id="timerDisplay">0.00s</div>
+
+                        <!-- Free Response -->
+                        <div class="answer-input-container" id="freeResponseArea">
+                            <div class="answer-input-wrapper">
+                                <span class="prefix">$</span>
+                                <input type="number" class="answer-input" id="answerInput" placeholder="0.00" step="0.01" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <!-- Multiple Choice -->
+                        <div class="mc-options hidden" id="mcArea">
+                            <button class="mc-option" data-index="0">$0.00</button>
+                            <button class="mc-option" data-index="1">$0.00</button>
+                            <button class="mc-option" data-index="2">$0.00</button>
+                            <button class="mc-option" data-index="3">$0.00</button>
+                        </div>
+
+                        <button class="submit-btn" id="submitBtn">Check Answer</button>
+
+                        <div class="feedback" id="feedback"></div>
+
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-value correct-stat" id="correctCount">0</div>
+                                <div class="stat-label">Correct</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value incorrect-stat" id="incorrectCount">0</div>
+                                <div class="stat-label">Incorrect</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Mode Card -->
-        <div class="card">
-            <div class="card-title">Answer Mode</div>
-            <div class="mode-toggle">
-                <button class="mode-btn active" data-mode="free">Free Response</button>
-                <button class="mode-btn" data-mode="mc">Multiple Choice</button>
+        <!-- Stats View -->
+        <div class="view" id="statsView">
+            <div class="card">
+                <div class="card-title">Your Statistics</div>
+                <div id="statsContent">
+                    <div class="login-prompt" id="statsLoginPrompt">
+                        <p>Sign in to track your statistics across sessions</p>
+                        <button class="auth-btn" onclick="showAuthModal()">Sign In</button>
+                    </div>
+                    <div class="hidden" id="statsData">
+                        <div class="stats-grid">
+                            <div class="stats-card">
+                                <div class="stats-card-value" id="statTotalAttempts">0</div>
+                                <div class="stats-card-label">Total Attempts</div>
+                            </div>
+                            <div class="stats-card">
+                                <div class="stats-card-value success" id="statAccuracy">0%</div>
+                                <div class="stats-card-label">Accuracy</div>
+                            </div>
+                            <div class="stats-card">
+                                <div class="stats-card-value accent" id="statFastestTime">--</div>
+                                <div class="stats-card-label">Fastest Time</div>
+                            </div>
+                            <div class="stats-card">
+                                <div class="stats-card-value" id="statAvgTime">--</div>
+                                <div class="stats-card-label">Average Time</div>
+                            </div>
+                        </div>
+                        <div class="stats-breakdown">
+                            <div class="card-title" style="margin-top: 16px;">By Tip Percentage</div>
+                            <div id="statsByPercent"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Quiz Card -->
-        <div class="card">
-            <div class="quiz-area">
-                <!-- Start Screen -->
-                <div class="start-screen" id="startScreen">
-                    <p>Select your tip percentages above and start practicing!</p>
-                    <button class="start-btn" id="startBtn">Start Practice</button>
+        <!-- Leaderboard View -->
+        <div class="view" id="leaderboardView">
+            <div class="card">
+                <div class="card-title">Fastest Times</div>
+                <div class="leaderboard-filters">
+                    <button class="filter-btn active" data-filter="all">Overall</button>
+                    <button class="filter-btn" data-filter="10">10%</button>
+                    <button class="filter-btn" data-filter="15">15%</button>
+                    <button class="filter-btn" data-filter="20">20%</button>
+                    <button class="filter-btn" data-filter="25">25%</button>
                 </div>
-
-                <!-- Active Quiz -->
-                <div class="hidden" id="quizActive">
-                    <div class="price-display">
-                        <div class="price-label">Bill Total</div>
-                        <div class="price-value" id="priceValue">$0.00</div>
-                    </div>
-                    <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
-
-                    <!-- Free Response -->
-                    <div class="answer-input-container" id="freeResponseArea">
-                        <div class="answer-input-wrapper">
-                            <span class="prefix">$</span>
-                            <input type="number" class="answer-input" id="answerInput" placeholder="0.00" step="0.01" inputmode="decimal">
-                        </div>
-                    </div>
-
-                    <!-- Multiple Choice -->
-                    <div class="mc-options hidden" id="mcArea">
-                        <button class="mc-option" data-index="0">$0.00</button>
-                        <button class="mc-option" data-index="1">$0.00</button>
-                        <button class="mc-option" data-index="2">$0.00</button>
-                        <button class="mc-option" data-index="3">$0.00</button>
-                    </div>
-
-                    <button class="submit-btn" id="submitBtn">Check Answer</button>
-
-                    <div class="feedback" id="feedback"></div>
-
-                    <div class="stats">
-                        <div class="stat">
-                            <div class="stat-value correct-stat" id="correctCount">0</div>
-                            <div class="stat-label">Correct</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value incorrect-stat" id="incorrectCount">0</div>
-                            <div class="stat-label">Incorrect</div>
-                        </div>
-                    </div>
+                <div class="leaderboard-list" id="leaderboardList">
+                    <div class="empty-state">Loading...</div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <div class="modal-tabs">
+                <button class="modal-tab active" data-auth-tab="login">Sign In</button>
+                <button class="modal-tab" data-auth-tab="register">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-error" id="loginError"></div>
+                <button type="submit" class="modal-submit">Sign In</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="registerUsername" required minlength="3" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" required minlength="6">
+                </div>
+                <div class="form-error" id="registerError"></div>
+                <button type="submit" class="modal-submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNmpQbMXPGRoxAiZJpBd_Zxum99F5_P2U",
+            authDomain: "tip-trainer.firebaseapp.com",
+            projectId: "tip-trainer",
+            storageBucket: "tip-trainer.firebasestorage.app",
+            messagingSenderId: "331029021808",
+            appId: "1:331029021808:web:ed7529a865f9209ab2e0b5"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
         // State
+        let currentUser = null;
+        let username = null;
         let selectedTips = [10, 15, 20, 25];
         let customTips = [];
-        let mode = 'free'; // 'free' or 'mc'
+        let mode = 'free';
         let currentPrice = 0;
         let currentTip = 0;
         let correctAnswer = 0;
         let correctCount = 0;
         let incorrectCount = 0;
         let answered = false;
+        let timerInterval = null;
+        let timerStart = 0;
+        let elapsedTime = 0;
 
         // DOM Elements
         const tipOptions = document.querySelectorAll('.tip-option');
@@ -628,6 +1173,151 @@
         const feedback = document.getElementById('feedback');
         const correctCountEl = document.getElementById('correctCount');
         const incorrectCountEl = document.getElementById('incorrectCount');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const views = document.querySelectorAll('.view');
+        const authModal = document.getElementById('authModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userInfo = document.getElementById('userInfo');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Auth state listener
+        auth.onAuthStateChanged(async (user) => {
+            currentUser = user;
+            if (user) {
+                // Get username from Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    username = userDoc.data().username;
+                    usernameDisplay.textContent = username;
+                }
+                userInfo.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                document.getElementById('statsLoginPrompt').classList.add('hidden');
+                document.getElementById('statsData').classList.remove('hidden');
+                loadUserStats();
+            } else {
+                username = null;
+                userInfo.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                document.getElementById('statsLoginPrompt').classList.remove('hidden');
+                document.getElementById('statsData').classList.add('hidden');
+            }
+        });
+
+        // Navigation
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                navTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const viewId = tab.dataset.view + 'View';
+                views.forEach(v => v.classList.remove('active'));
+                document.getElementById(viewId).classList.add('active');
+
+                if (tab.dataset.view === 'leaderboard') {
+                    loadLeaderboard('all');
+                } else if (tab.dataset.view === 'stats' && currentUser) {
+                    loadUserStats();
+                }
+            });
+        });
+
+        // Auth Modal
+        function showAuthModal() {
+            authModal.classList.add('show');
+        }
+
+        function hideAuthModal() {
+            authModal.classList.remove('show');
+        }
+
+        loginBtn.addEventListener('click', showAuthModal);
+        logoutBtn.addEventListener('click', () => auth.signOut());
+
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) hideAuthModal();
+        });
+
+        // Auth tabs
+        document.querySelectorAll('.modal-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                if (tab.dataset.authTab === 'login') {
+                    document.getElementById('loginForm').classList.remove('hidden');
+                    document.getElementById('registerForm').classList.add('hidden');
+                } else {
+                    document.getElementById('loginForm').classList.add('hidden');
+                    document.getElementById('registerForm').classList.remove('hidden');
+                }
+            });
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                hideAuthModal();
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.classList.add('show');
+            }
+        });
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameVal = document.getElementById('registerUsername').value.trim();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const errorEl = document.getElementById('registerError');
+
+            try {
+                // Check if username is taken
+                const usernameCheck = await db.collection('users').where('username', '==', usernameVal).get();
+                if (!usernameCheck.empty) {
+                    throw new Error('Username is already taken');
+                }
+
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    username: usernameVal,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                hideAuthModal();
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.classList.add('show');
+            }
+        });
+
+        // Timer functions
+        function startTimer() {
+            timerStart = Date.now();
+            timerDisplay.classList.remove('stopped');
+            timerDisplay.classList.add('running');
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - timerStart;
+                timerDisplay.textContent = (elapsedTime / 1000).toFixed(2) + 's';
+            }, 10);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = Date.now() - timerStart;
+            timerDisplay.textContent = (elapsedTime / 1000).toFixed(2) + 's';
+            timerDisplay.classList.remove('running');
+            timerDisplay.classList.add('stopped');
+        }
 
         // Tip selection
         tipOptions.forEach(option => {
@@ -731,6 +1421,8 @@
                 generateMCOptions();
             }
 
+            startTimer();
+
             if (mode === 'free') {
                 answerInput.focus();
             }
@@ -739,9 +1431,7 @@
         function generateMCOptions() {
             const options = [correctAnswer];
 
-            // Generate 3 wrong answers
             while (options.length < 4) {
-                // Vary by a reasonable amount
                 const variance = correctAnswer * (Math.random() * 0.4 - 0.2);
                 let wrong = Math.round((correctAnswer + variance + (Math.random() > 0.5 ? 0.5 : -0.5)) * 100) / 100;
                 if (wrong < 0.01) wrong = correctAnswer + 0.5;
@@ -750,7 +1440,6 @@
                 }
             }
 
-            // Shuffle
             options.sort(() => Math.random() - 0.5);
 
             mcOptions.forEach((opt, i) => {
@@ -759,7 +1448,7 @@
             });
         }
 
-        // Submit answer (free response)
+        // Submit answer
         submitBtn.addEventListener('click', () => {
             if (answered) {
                 generateQuestion();
@@ -775,14 +1464,12 @@
             checkAnswer(userAnswer);
         });
 
-        // Enter key for free response
         answerInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 submitBtn.click();
             }
         });
 
-        // MC option click
         mcOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 if (answered) return;
@@ -791,14 +1478,16 @@
             });
         });
 
-        function checkAnswer(userAnswer, mcElement = null) {
+        async function checkAnswer(userAnswer, mcElement = null) {
             answered = true;
+            stopTimer();
+
             const isCorrect = Math.abs(userAnswer - correctAnswer) < 0.01;
 
             if (isCorrect) {
                 correctCount++;
                 correctCountEl.textContent = correctCount;
-                feedback.textContent = 'Correct! 🎉';
+                feedback.textContent = `Correct! (${(elapsedTime / 1000).toFixed(2)}s)`;
                 feedback.className = 'feedback show correct';
 
                 if (mode === 'free') {
@@ -816,7 +1505,6 @@
                     answerInput.classList.add('incorrect');
                 } else if (mcElement) {
                     mcElement.classList.add('incorrect');
-                    // Show correct answer
                     mcOptions.forEach(opt => {
                         if (Math.abs(parseFloat(opt.dataset.value) - correctAnswer) < 0.01) {
                             opt.classList.add('reveal-correct');
@@ -827,13 +1515,171 @@
 
             submitBtn.textContent = 'Next Question';
 
-            // Auto-advance for MC after a short delay
+            // Save attempt to Firestore if logged in
+            if (currentUser && username) {
+                try {
+                    await db.collection('attempts').add({
+                        uid: currentUser.uid,
+                        username: username,
+                        tipPercent: currentTip,
+                        billAmount: currentPrice,
+                        correct: isCorrect,
+                        timeMs: elapsedTime,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (error) {
+                    console.error('Error saving attempt:', error);
+                }
+            }
+
             if (mode === 'mc') {
                 setTimeout(() => {
                     if (answered) generateQuestion();
                 }, 1500);
             }
         }
+
+        // Load user stats
+        async function loadUserStats() {
+            if (!currentUser) return;
+
+            try {
+                const attempts = await db.collection('attempts')
+                    .where('uid', '==', currentUser.uid)
+                    .get();
+
+                const data = attempts.docs.map(doc => doc.data());
+
+                if (data.length === 0) {
+                    document.getElementById('statTotalAttempts').textContent = '0';
+                    document.getElementById('statAccuracy').textContent = '0%';
+                    document.getElementById('statFastestTime').textContent = '--';
+                    document.getElementById('statAvgTime').textContent = '--';
+                    document.getElementById('statsByPercent').innerHTML = '<div class="empty-state">No attempts yet</div>';
+                    return;
+                }
+
+                const totalAttempts = data.length;
+                const correctAttempts = data.filter(a => a.correct).length;
+                const accuracy = Math.round((correctAttempts / totalAttempts) * 100);
+
+                const correctTimes = data.filter(a => a.correct).map(a => a.timeMs);
+                const fastestTime = correctTimes.length > 0 ? Math.min(...correctTimes) : null;
+                const avgTime = correctTimes.length > 0 ? correctTimes.reduce((a, b) => a + b, 0) / correctTimes.length : null;
+
+                document.getElementById('statTotalAttempts').textContent = totalAttempts;
+                document.getElementById('statAccuracy').textContent = accuracy + '%';
+                document.getElementById('statFastestTime').textContent = fastestTime ? (fastestTime / 1000).toFixed(2) + 's' : '--';
+                document.getElementById('statAvgTime').textContent = avgTime ? (avgTime / 1000).toFixed(2) + 's' : '--';
+
+                // Stats by percentage
+                const byPercent = {};
+                data.forEach(a => {
+                    if (!byPercent[a.tipPercent]) {
+                        byPercent[a.tipPercent] = { total: 0, correct: 0, times: [] };
+                    }
+                    byPercent[a.tipPercent].total++;
+                    if (a.correct) {
+                        byPercent[a.tipPercent].correct++;
+                        byPercent[a.tipPercent].times.push(a.timeMs);
+                    }
+                });
+
+                const percentHtml = Object.keys(byPercent).sort((a, b) => a - b).map(pct => {
+                    const stats = byPercent[pct];
+                    const acc = Math.round((stats.correct / stats.total) * 100);
+                    const fastest = stats.times.length > 0 ? (Math.min(...stats.times) / 1000).toFixed(2) + 's' : '--';
+                    return `
+                        <div class="stats-row">
+                            <span class="stats-row-label">${pct}%</span>
+                            <span class="stats-row-value">${acc}% accuracy, fastest: ${fastest}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('statsByPercent').innerHTML = percentHtml || '<div class="empty-state">No attempts yet</div>';
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Leaderboard
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadLeaderboard(btn.dataset.filter);
+            });
+        });
+
+        async function loadLeaderboard(filter) {
+            const listEl = document.getElementById('leaderboardList');
+            listEl.innerHTML = '<div class="empty-state">Loading...</div>';
+
+            try {
+                let query = db.collection('attempts')
+                    .where('correct', '==', true)
+                    .orderBy('timeMs', 'asc')
+                    .limit(50);
+
+                if (filter !== 'all') {
+                    query = db.collection('attempts')
+                        .where('correct', '==', true)
+                        .where('tipPercent', '==', parseInt(filter))
+                        .orderBy('timeMs', 'asc')
+                        .limit(50);
+                }
+
+                const snapshot = await query.get();
+
+                if (snapshot.empty) {
+                    listEl.innerHTML = '<div class="empty-state">No entries yet. Be the first!</div>';
+                    return;
+                }
+
+                // Get unique users' best times
+                const bestTimes = {};
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    if (!bestTimes[data.uid] || data.timeMs < bestTimes[data.uid].timeMs) {
+                        bestTimes[data.uid] = data;
+                    }
+                });
+
+                // Sort and take top 10
+                const sorted = Object.values(bestTimes)
+                    .sort((a, b) => a.timeMs - b.timeMs)
+                    .slice(0, 10);
+
+                if (sorted.length === 0) {
+                    listEl.innerHTML = '<div class="empty-state">No entries yet. Be the first!</div>';
+                    return;
+                }
+
+                listEl.innerHTML = sorted.map((entry, i) => {
+                    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                    const date = entry.timestamp ? entry.timestamp.toDate().toLocaleDateString() : '';
+                    return `
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank ${rankClass}">${i + 1}</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-name">${entry.username || 'Anonymous'}</div>
+                                <div class="leaderboard-meta">${entry.tipPercent}% tip${date ? ' · ' + date : ''}</div>
+                            </div>
+                            <div class="leaderboard-time">${(entry.timeMs / 1000).toFixed(2)}s</div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                listEl.innerHTML = '<div class="empty-state">Error loading leaderboard</div>';
+            }
+        }
+
+        // Initial leaderboard load
+        loadLeaderboard('all');
     </script>
 </body>
 </html>
