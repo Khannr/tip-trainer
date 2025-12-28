@@ -312,39 +312,177 @@
 
         /* Receipt */
         .receipt {
-            background: var(--bg-primary);
-            border-radius: var(--radius);
-            padding: 16px 20px;
+            background: #fffef8;
+            border-radius: 4px;
+            padding: 20px 24px;
             margin-bottom: 16px;
+            font-family: 'Courier New', Courier, monospace;
             font-variant-numeric: tabular-nums;
+            box-shadow:
+                0 1px 3px rgba(0,0,0,0.08),
+                0 8px 20px rgba(0,0,0,0.04);
+            position: relative;
+            border: 1px solid #e8e4d9;
+        }
+
+        .receipt::before,
+        .receipt::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(135deg, #fffef8 33.33%, transparent 33.33%, transparent 66.66%, #fffef8 66.66%),
+                        linear-gradient(-135deg, #fffef8 33.33%, transparent 33.33%, transparent 66.66%, #fffef8 66.66%);
+            background-size: 12px 20px;
+        }
+
+        .receipt::before {
+            top: -8px;
+            background-color: transparent;
+        }
+
+        .receipt::after {
+            bottom: -8px;
+            transform: rotate(180deg);
+        }
+
+        .receipt-header {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #ccc;
+            margin-bottom: 12px;
+        }
+
+        .receipt-logo {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .receipt-address {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .receipt-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .receipt-divider {
+            border: none;
+            border-top: 1px dashed #ccc;
+            margin: 12px 0;
+        }
+
+        .receipt-meta {
+            font-size: 12px;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
         }
 
         .receipt-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            font-size: 18px;
+            padding: 6px 0;
+            font-size: 14px;
+            color: #333;
         }
 
-        .receipt-row:first-child {
-            padding-top: 0;
+        .receipt-row.subtotal-row {
+            font-size: 15px;
         }
 
         .receipt-row.tip-row {
-            color: var(--success);
-            font-weight: 500;
-            border-top: 1px dashed var(--border);
-            margin-top: 8px;
-            padding-top: 12px;
+            color: #2d8a2d;
+            font-weight: bold;
         }
 
         .receipt-row.total-row {
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 20px;
-            border-top: 2px solid var(--border);
-            margin-top: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            padding-top: 10px;
+            margin-top: 6px;
+            border-top: 2px dashed #333;
+        }
+
+        .receipt-row .dots {
+            flex: 1;
+            border-bottom: 1px dotted #aaa;
+            margin: 0 8px 4px 8px;
+        }
+
+        .receipt-signature {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .signature-label {
+            font-size: 14px;
+            color: #333;
+            letter-spacing: 1px;
+        }
+
+        .signature-text {
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .receipt-footer {
+            text-align: center;
             padding-top: 12px;
+            border-top: 1px dashed #ccc;
+            margin-top: 16px;
+        }
+
+        .receipt-thank-you {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .receipt-merchant {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .receipt-barcode {
+            margin-top: 12px;
+            font-family: 'Libre Barcode 39', monospace;
+            font-size: 32px;
+            letter-spacing: -2px;
+            color: #333;
+        }
+
+        /* Fallback barcode using CSS */
+        .receipt-barcode-visual {
+            display: flex;
+            justify-content: center;
+            gap: 1px;
+            margin-top: 10px;
+            height: 30px;
+        }
+
+        .receipt-barcode-visual span {
+            background: #333;
+            width: 2px;
+        }
+
+        .receipt-barcode-visual span:nth-child(odd) {
+            width: 1px;
+        }
+
+        .receipt-barcode-visual span:nth-child(3n) {
+            width: 3px;
         }
 
         /* Timer */
@@ -1006,17 +1144,60 @@
                     <!-- Active Quiz -->
                     <div class="hidden" id="quizActive">
                         <div class="receipt" id="receipt">
-                            <div class="receipt-row">
+                            <div class="receipt-header">
+                                <div class="receipt-logo">TIP TRAINER</div>
+                                <div class="receipt-address">
+                                    123 Practice Lane<br>
+                                    Calculon City, TC 12345<br>
+                                    (555) 123-4567
+                                </div>
+                                <div class="receipt-date" id="receiptDate"></div>
+                            </div>
+
+                            <hr class="receipt-divider">
+
+                            <div class="receipt-meta">
+                                <div>Server: <span id="receiptServer">Alex</span></div>
+                                <div>Table: <span id="receiptTable">12</span></div>
+                                <div>Check: <span id="receiptCheck">#0001</span></div>
+                            </div>
+
+                            <hr class="receipt-divider">
+
+                            <div class="receipt-row subtotal-row">
                                 <span>Subtotal</span>
+                                <span class="dots"></span>
                                 <span id="receiptSubtotal">$0.00</span>
                             </div>
                             <div class="receipt-row tip-row hidden" id="receiptTipRow">
                                 <span>Tip (<span id="receiptTipPercent">20</span>%)</span>
+                                <span class="dots"></span>
                                 <span id="receiptTip">$0.00</span>
                             </div>
                             <div class="receipt-row total-row hidden" id="receiptTotalRow">
-                                <span>Total</span>
+                                <span>TOTAL</span>
+                                <span class="dots"></span>
                                 <span id="receiptTotal">$0.00</span>
+                            </div>
+
+                            <div class="receipt-signature">
+                                <div class="signature-label">x_______________________</div>
+                                <div class="signature-text">Signature</div>
+                            </div>
+
+                            <div class="receipt-footer">
+                                <div class="receipt-thank-you">
+                                    Thank you for dining with us!<br>
+                                    Please come again
+                                </div>
+                                <div class="receipt-barcode-visual">
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                </div>
+                                <div class="receipt-merchant">*** MERCHANT COPY ***</div>
                             </div>
                         </div>
                         <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
@@ -1466,6 +1647,19 @@
             // Update receipt
             document.getElementById('receiptSubtotal').textContent = '$' + currentPrice.toFixed(2);
             document.getElementById('receiptTipPercent').textContent = currentTip;
+
+            // Set current date/time on receipt
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('receiptDate').textContent = `${dateStr}  ${timeStr}`;
+
+            // Randomize receipt details
+            const servers = ['Alex', 'Jordan', 'Sam', 'Taylor', 'Casey', 'Morgan', 'Riley', 'Jamie'];
+            document.getElementById('receiptServer').textContent = servers[Math.floor(Math.random() * servers.length)];
+            document.getElementById('receiptTable').textContent = Math.floor(Math.random() * 30) + 1;
+            document.getElementById('receiptCheck').textContent = '#' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
+
             tipPercentDisplay.textContent = `Calculate ${currentTip}% tip`;
 
             if (mode === 'mc') {
