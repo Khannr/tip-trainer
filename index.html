@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tip Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f5f5f7;
+            --bg-secondary: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #0071e3;
+            --accent-hover: #0077ed;
+            --success: #34c759;
+            --error: #ff3b30;
+            --border: #d2d2d7;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        /* Tip Percentage Selection */
+        .tip-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .tip-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 16px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tip-option:hover {
+            background: #e8e8ed;
+        }
+
+        .tip-option.selected {
+            border-color: var(--accent);
+            background: rgba(0, 113, 227, 0.08);
+            color: var(--accent);
+        }
+
+        .tip-option input[type="checkbox"] {
+            display: none;
+        }
+
+        /* Custom Tip Input */
+        .custom-tip-container {
+            margin-top: 10px;
+        }
+
+        .custom-tip-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .custom-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .custom-input-wrapper input {
+            width: 100%;
+            padding: 14px 16px;
+            padding-right: 30px;
+            font-size: 17px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .custom-input-wrapper input:focus {
+            border-color: var(--accent);
+        }
+
+        .custom-input-wrapper .suffix {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 17px;
+        }
+
+        .add-custom-btn {
+            padding: 14px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .add-custom-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 4px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mode-btn.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Quiz Area */
+        .quiz-area {
+            text-align: center;
+        }
+
+        .price-display {
+            margin-bottom: 8px;
+        }
+
+        .price-label {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .price-value {
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        .tip-percentage-display {
+            font-size: 17px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        /* Free Response Input */
+        .answer-input-container {
+            margin-bottom: 16px;
+        }
+
+        .answer-input-wrapper {
+            position: relative;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .answer-input-wrapper .prefix {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 16px 16px 16px 36px;
+            font-size: 24px;
+            font-weight: 500;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .answer-input:focus {
+            border-color: var(--accent);
+        }
+
+        .answer-input.correct {
+            border-color: var(--success);
+            background: rgba(52, 199, 89, 0.08);
+        }
+
+        .answer-input.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        /* Multiple Choice Options */
+        .mc-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .mc-option {
+            padding: 18px 16px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mc-option:hover {
+            background: #e8e8ed;
+        }
+
+        .mc-option:active {
+            transform: scale(0.98);
+        }
+
+        .mc-option.correct {
+            border-color: var(--success);
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--success);
+        }
+
+        .mc-option.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--error);
+        }
+
+        .mc-option.reveal-correct {
+            border-color: var(--success);
+            background: rgba(52, 199, 89, 0.15);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px 32px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--success);
+        }
+
+        .feedback.incorrect {
+            background: rgba(255, 59, 48, 0.12);
+            color: var(--error);
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            margin-top: 16px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .stat-value.correct-stat {
+            color: var(--success);
+        }
+
+        .stat-value.incorrect-stat {
+            color: var(--error);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .start-screen p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .start-btn {
+            padding: 16px 48px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .start-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Custom tip tag */
+        .custom-tips-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .custom-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .custom-tag button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
+            opacity: 0.7;
+        }
+
+        .custom-tag button:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .price-value {
+                font-size: 40px;
+            }
+
+            .mc-option {
+                padding: 14px 12px;
+                font-size: 18px;
+            }
+        }
+
+        /* Safe area for iPhone notch */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tip Trainer</h1>
+            <p class="subtitle">Practice calculating tips</p>
+        </header>
+
+        <!-- Settings Card -->
+        <div class="card">
+            <div class="card-title">Tip Percentages</div>
+            <div class="tip-options">
+                <label class="tip-option selected" data-tip="10">
+                    <input type="checkbox" value="10" checked>
+                    10%
+                </label>
+                <label class="tip-option selected" data-tip="15">
+                    <input type="checkbox" value="15" checked>
+                    15%
+                </label>
+                <label class="tip-option selected" data-tip="20">
+                    <input type="checkbox" value="20" checked>
+                    20%
+                </label>
+                <label class="tip-option selected" data-tip="25">
+                    <input type="checkbox" value="25" checked>
+                    25%
+                </label>
+            </div>
+            <div class="custom-tip-container">
+                <div class="custom-tip-row">
+                    <div class="custom-input-wrapper">
+                        <input type="number" id="customTipInput" placeholder="Custom" min="1" max="100">
+                        <span class="suffix">%</span>
+                    </div>
+                    <button class="add-custom-btn" id="addCustomBtn">Add</button>
+                </div>
+                <div class="custom-tips-display" id="customTipsDisplay"></div>
+            </div>
+        </div>
+
+        <!-- Mode Card -->
+        <div class="card">
+            <div class="card-title">Answer Mode</div>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="free">Free Response</button>
+                <button class="mode-btn" data-mode="mc">Multiple Choice</button>
+            </div>
+        </div>
+
+        <!-- Quiz Card -->
+        <div class="card">
+            <div class="quiz-area">
+                <!-- Start Screen -->
+                <div class="start-screen" id="startScreen">
+                    <p>Select your tip percentages above and start practicing!</p>
+                    <button class="start-btn" id="startBtn">Start Practice</button>
+                </div>
+
+                <!-- Active Quiz -->
+                <div class="hidden" id="quizActive">
+                    <div class="price-display">
+                        <div class="price-label">Bill Total</div>
+                        <div class="price-value" id="priceValue">$0.00</div>
+                    </div>
+                    <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
+
+                    <!-- Free Response -->
+                    <div class="answer-input-container" id="freeResponseArea">
+                        <div class="answer-input-wrapper">
+                            <span class="prefix">$</span>
+                            <input type="number" class="answer-input" id="answerInput" placeholder="0.00" step="0.01" inputmode="decimal">
+                        </div>
+                    </div>
+
+                    <!-- Multiple Choice -->
+                    <div class="mc-options hidden" id="mcArea">
+                        <button class="mc-option" data-index="0">$0.00</button>
+                        <button class="mc-option" data-index="1">$0.00</button>
+                        <button class="mc-option" data-index="2">$0.00</button>
+                        <button class="mc-option" data-index="3">$0.00</button>
+                    </div>
+
+                    <button class="submit-btn" id="submitBtn">Check Answer</button>
+
+                    <div class="feedback" id="feedback"></div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value correct-stat" id="correctCount">0</div>
+                            <div class="stat-label">Correct</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value incorrect-stat" id="incorrectCount">0</div>
+                            <div class="stat-label">Incorrect</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let selectedTips = [10, 15, 20, 25];
+        let customTips = [];
+        let mode = 'free'; // 'free' or 'mc'
+        let currentPrice = 0;
+        let currentTip = 0;
+        let correctAnswer = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let answered = false;
+
+        // DOM Elements
+        const tipOptions = document.querySelectorAll('.tip-option');
+        const customTipInput = document.getElementById('customTipInput');
+        const addCustomBtn = document.getElementById('addCustomBtn');
+        const customTipsDisplay = document.getElementById('customTipsDisplay');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const startScreen = document.getElementById('startScreen');
+        const quizActive = document.getElementById('quizActive');
+        const startBtn = document.getElementById('startBtn');
+        const priceValue = document.getElementById('priceValue');
+        const tipPercentDisplay = document.getElementById('tipPercentDisplay');
+        const freeResponseArea = document.getElementById('freeResponseArea');
+        const mcArea = document.getElementById('mcArea');
+        const answerInput = document.getElementById('answerInput');
+        const mcOptions = document.querySelectorAll('.mc-option');
+        const submitBtn = document.getElementById('submitBtn');
+        const feedback = document.getElementById('feedback');
+        const correctCountEl = document.getElementById('correctCount');
+        const incorrectCountEl = document.getElementById('incorrectCount');
+
+        // Tip selection
+        tipOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const checkbox = option.querySelector('input');
+                const value = parseInt(checkbox.value);
+
+                checkbox.checked = !checkbox.checked;
+                option.classList.toggle('selected', checkbox.checked);
+
+                if (checkbox.checked) {
+                    if (!selectedTips.includes(value)) {
+                        selectedTips.push(value);
+                    }
+                } else {
+                    selectedTips = selectedTips.filter(t => t !== value);
+                }
+            });
+        });
+
+        // Custom tip
+        addCustomBtn.addEventListener('click', addCustomTip);
+        customTipInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addCustomTip();
+        });
+
+        function addCustomTip() {
+            const value = parseInt(customTipInput.value);
+            if (value && value > 0 && value <= 100 && !customTips.includes(value) && !selectedTips.includes(value)) {
+                customTips.push(value);
+                selectedTips.push(value);
+                renderCustomTips();
+                customTipInput.value = '';
+            }
+        }
+
+        function renderCustomTips() {
+            customTipsDisplay.innerHTML = customTips.map(tip => `
+                <span class="custom-tag">
+                    ${tip}%
+                    <button onclick="removeCustomTip(${tip})">&times;</button>
+                </span>
+            `).join('');
+        }
+
+        window.removeCustomTip = function(tip) {
+            customTips = customTips.filter(t => t !== tip);
+            selectedTips = selectedTips.filter(t => t !== tip);
+            renderCustomTips();
+        };
+
+        // Mode toggle
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                mode = btn.dataset.mode;
+
+                if (mode === 'free') {
+                    freeResponseArea.classList.remove('hidden');
+                    mcArea.classList.add('hidden');
+                    submitBtn.classList.remove('hidden');
+                } else {
+                    freeResponseArea.classList.add('hidden');
+                    mcArea.classList.remove('hidden');
+                    submitBtn.classList.add('hidden');
+                }
+            });
+        });
+
+        // Start quiz
+        startBtn.addEventListener('click', () => {
+            if (selectedTips.length === 0) {
+                alert('Please select at least one tip percentage!');
+                return;
+            }
+            startScreen.classList.add('hidden');
+            quizActive.classList.remove('hidden');
+            generateQuestion();
+        });
+
+        // Generate question
+        function generateQuestion() {
+            answered = false;
+            feedback.classList.remove('show');
+            answerInput.value = '';
+            answerInput.classList.remove('correct', 'incorrect');
+            mcOptions.forEach(opt => opt.classList.remove('correct', 'incorrect', 'reveal-correct'));
+            submitBtn.textContent = 'Check Answer';
+            submitBtn.disabled = false;
+
+            // Random price between $5 and $150
+            currentPrice = Math.floor(Math.random() * 14600 + 500) / 100;
+            currentTip = selectedTips[Math.floor(Math.random() * selectedTips.length)];
+            correctAnswer = Math.round(currentPrice * currentTip) / 100;
+
+            priceValue.textContent = '$' + currentPrice.toFixed(2);
+            tipPercentDisplay.textContent = `Calculate ${currentTip}% tip`;
+
+            if (mode === 'mc') {
+                generateMCOptions();
+            }
+
+            if (mode === 'free') {
+                answerInput.focus();
+            }
+        }
+
+        function generateMCOptions() {
+            const options = [correctAnswer];
+
+            // Generate 3 wrong answers
+            while (options.length < 4) {
+                // Vary by a reasonable amount
+                const variance = correctAnswer * (Math.random() * 0.4 - 0.2);
+                let wrong = Math.round((correctAnswer + variance + (Math.random() > 0.5 ? 0.5 : -0.5)) * 100) / 100;
+                if (wrong < 0.01) wrong = correctAnswer + 0.5;
+                if (!options.some(o => Math.abs(o - wrong) < 0.01)) {
+                    options.push(wrong);
+                }
+            }
+
+            // Shuffle
+            options.sort(() => Math.random() - 0.5);
+
+            mcOptions.forEach((opt, i) => {
+                opt.textContent = '$' + options[i].toFixed(2);
+                opt.dataset.value = options[i];
+            });
+        }
+
+        // Submit answer (free response)
+        submitBtn.addEventListener('click', () => {
+            if (answered) {
+                generateQuestion();
+                return;
+            }
+
+            const userAnswer = parseFloat(answerInput.value);
+            if (isNaN(userAnswer)) {
+                answerInput.focus();
+                return;
+            }
+
+            checkAnswer(userAnswer);
+        });
+
+        // Enter key for free response
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+
+        // MC option click
+        mcOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                if (answered) return;
+                const userAnswer = parseFloat(opt.dataset.value);
+                checkAnswer(userAnswer, opt);
+            });
+        });
+
+        function checkAnswer(userAnswer, mcElement = null) {
+            answered = true;
+            const isCorrect = Math.abs(userAnswer - correctAnswer) < 0.01;
+
+            if (isCorrect) {
+                correctCount++;
+                correctCountEl.textContent = correctCount;
+                feedback.textContent = 'Correct! 🎉';
+                feedback.className = 'feedback show correct';
+
+                if (mode === 'free') {
+                    answerInput.classList.add('correct');
+                } else if (mcElement) {
+                    mcElement.classList.add('correct');
+                }
+            } else {
+                incorrectCount++;
+                incorrectCountEl.textContent = incorrectCount;
+                feedback.textContent = `Incorrect. The answer was $${correctAnswer.toFixed(2)}`;
+                feedback.className = 'feedback show incorrect';
+
+                if (mode === 'free') {
+                    answerInput.classList.add('incorrect');
+                } else if (mcElement) {
+                    mcElement.classList.add('incorrect');
+                    // Show correct answer
+                    mcOptions.forEach(opt => {
+                        if (Math.abs(parseFloat(opt.dataset.value) - correctAnswer) < 0.01) {
+                            opt.classList.add('reveal-correct');
+                        }
+                    });
+                }
+            }
+
+            submitBtn.textContent = 'Next Question';
+
+            // Auto-advance for MC after a short delay
+            if (mode === 'mc') {
+                setTimeout(() => {
+                    if (answered) generateQuestion();
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
