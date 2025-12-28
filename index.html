@@ -291,22 +291,6 @@
             text-align: center;
         }
 
-        .price-display {
-            margin-bottom: 8px;
-        }
-
-        .price-label {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .price-value {
-            font-size: 48px;
-            font-weight: 600;
-            letter-spacing: -1px;
-        }
-
         .tip-percentage-display {
             font-size: 17px;
             color: var(--accent);
@@ -324,6 +308,43 @@
         .answer-phase.highlight {
             color: var(--success);
             font-weight: 500;
+        }
+
+        /* Receipt */
+        .receipt {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 18px;
+        }
+
+        .receipt-row:first-child {
+            padding-top: 0;
+        }
+
+        .receipt-row.tip-row {
+            color: var(--success);
+            font-weight: 500;
+            border-top: 1px dashed var(--border);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+
+        .receipt-row.total-row {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 20px;
+            border-top: 2px solid var(--border);
+            margin-top: 8px;
+            padding-top: 12px;
         }
 
         /* Timer */
@@ -890,10 +911,6 @@
 
         /* Responsive */
         @media (max-width: 380px) {
-            .price-value {
-                font-size: 40px;
-            }
-
             .mc-option {
                 padding: 14px 12px;
                 font-size: 18px;
@@ -988,9 +1005,19 @@
 
                     <!-- Active Quiz -->
                     <div class="hidden" id="quizActive">
-                        <div class="price-display">
-                            <div class="price-label">Bill Total</div>
-                            <div class="price-value" id="priceValue">$0.00</div>
+                        <div class="receipt" id="receipt">
+                            <div class="receipt-row">
+                                <span>Subtotal</span>
+                                <span id="receiptSubtotal">$0.00</span>
+                            </div>
+                            <div class="receipt-row tip-row hidden" id="receiptTipRow">
+                                <span>Tip (<span id="receiptTipPercent">20</span>%)</span>
+                                <span id="receiptTip">$0.00</span>
+                            </div>
+                            <div class="receipt-row total-row hidden" id="receiptTotalRow">
+                                <span>Total</span>
+                                <span id="receiptTotal">$0.00</span>
+                            </div>
                         </div>
                         <div class="tip-percentage-display" id="tipPercentDisplay">Calculate 20% tip</div>
                         <div class="answer-phase" id="answerPhase">Enter the tip amount</div>
@@ -1178,7 +1205,6 @@
         const startScreen = document.getElementById('startScreen');
         const quizActive = document.getElementById('quizActive');
         const startBtn = document.getElementById('startBtn');
-        const priceValue = document.getElementById('priceValue');
         const tipPercentDisplay = document.getElementById('tipPercentDisplay');
         const freeResponseArea = document.getElementById('freeResponseArea');
         const mcArea = document.getElementById('mcArea');
@@ -1427,13 +1453,19 @@
             document.getElementById('answerPhase').textContent = 'Enter the tip amount';
             document.getElementById('answerPhase').classList.remove('highlight');
 
+            // Reset receipt
+            document.getElementById('receiptTipRow').classList.add('hidden');
+            document.getElementById('receiptTotalRow').classList.add('hidden');
+
             // Random price between $5 and $150
             currentPrice = Math.floor(Math.random() * 14600 + 500) / 100;
             currentTip = selectedTips[Math.floor(Math.random() * selectedTips.length)];
             correctTipAmount = Math.round(currentPrice * currentTip) / 100;
             correctTotalAmount = Math.round((currentPrice + correctTipAmount) * 100) / 100;
 
-            priceValue.textContent = '$' + currentPrice.toFixed(2);
+            // Update receipt
+            document.getElementById('receiptSubtotal').textContent = '$' + currentPrice.toFixed(2);
+            document.getElementById('receiptTipPercent').textContent = currentTip;
             tipPercentDisplay.textContent = `Calculate ${currentTip}% tip`;
 
             if (mode === 'mc') {
@@ -1490,6 +1522,19 @@
             }
         });
 
+        // Auto-submit on correct answer (free response only)
+        answerInput.addEventListener('input', () => {
+            if (answered || mode !== 'free') return;
+
+            const userAnswer = parseFloat(answerInput.value);
+            if (isNaN(userAnswer)) return;
+
+            const correctAnswer = answerPhase === 'tip' ? correctTipAmount : correctTotalAmount;
+            if (Math.abs(userAnswer - correctAnswer) < 0.01) {
+                checkAnswer(userAnswer);
+            }
+        });
+
         mcOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 if (answered) return;
@@ -1508,6 +1553,10 @@
                     answerPhase = 'total';
                     document.getElementById('answerPhase').textContent = 'Now enter the total amount';
                     document.getElementById('answerPhase').classList.add('highlight');
+
+                    // Show tip on receipt
+                    document.getElementById('receiptTip').textContent = '$' + correctTipAmount.toFixed(2);
+                    document.getElementById('receiptTipRow').classList.remove('hidden');
 
                     if (mode === 'free') {
                         answerInput.value = '';
@@ -1561,6 +1610,10 @@
                     feedback.textContent = `Correct! (${(elapsedTime / 1000).toFixed(2)}s)`;
                     feedback.className = 'feedback show correct';
 
+                    // Show total on receipt
+                    document.getElementById('receiptTotal').textContent = '$' + correctTotalAmount.toFixed(2);
+                    document.getElementById('receiptTotalRow').classList.remove('hidden');
+
                     if (mode === 'free') {
                         answerInput.classList.add('correct');
                     } else if (mcElement) {
@@ -1573,6 +1626,10 @@
                     incorrectCountEl.textContent = incorrectCount;
                     feedback.textContent = `Incorrect. The total was $${correctTotalAmount.toFixed(2)}`;
                     feedback.className = 'feedback show incorrect';
+
+                    // Show correct total on receipt
+                    document.getElementById('receiptTotal').textContent = '$' + correctTotalAmount.toFixed(2);
+                    document.getElementById('receiptTotalRow').classList.remove('hidden');
 
                     if (mode === 'free') {
                         answerInput.classList.add('incorrect');
