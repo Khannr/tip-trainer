@@ -380,8 +380,12 @@
         }
 
         .receipt-row.tip-row {
-            color: #2d8a2d;
+            color: #333;
             font-weight: bold;
+        }
+
+        .receipt-row.tip-row.correct {
+            color: #2d8a2d;
         }
 
         .receipt-row.total-row {
@@ -462,11 +466,7 @@
 
         .timer-value {
             font-weight: bold;
-            color: var(--accent);
-        }
-
-        .timer-value.stopped {
-            color: var(--success);
+            color: #333;
         }
 
         .receipt-signature {
@@ -505,37 +505,25 @@
             color: #999;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        .receipt-barcode {
             margin-top: 12px;
-            font-family: 'Libre Barcode 39', monospace;
-            font-size: 32px;
-            letter-spacing: -2px;
-            color: #333;
         }
 
-        /* Fallback barcode using CSS */
-        .receipt-barcode-visual {
-            display: flex;
-            justify-content: center;
-            gap: 1px;
+        .receipt-qr {
             margin-top: 10px;
-            height: 30px;
         }
 
-        .receipt-barcode-visual span {
-            background: #333;
-            width: 2px;
+        .receipt-qr img {
+            display: block;
+            margin: 0 auto;
         }
 
-        .receipt-barcode-visual span:nth-child(odd) {
-            width: 1px;
+        .signature-name {
+            font-family: 'Brush Script MT', 'Segoe Script', cursive;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 4px;
         }
 
-        .receipt-barcode-visual span:nth-child(3n) {
-            width: 3px;
-        }
 
         /* Multiple Choice Options */
         .mc-options {
@@ -1188,6 +1176,7 @@
                             </div>
 
                             <div class="receipt-signature">
+                                <div class="signature-name hidden" id="signatureName"></div>
                                 <div class="signature-label">x_______________________</div>
                                 <div class="signature-text">Signature</div>
                             </div>
@@ -1197,12 +1186,8 @@
                                     Thank you for dining with us!<br>
                                     Please come again
                                 </div>
-                                <div class="receipt-barcode-visual">
-                                    <span></span><span></span><span></span><span></span><span></span>
-                                    <span></span><span></span><span></span><span></span><span></span>
-                                    <span></span><span></span><span></span><span></span><span></span>
-                                    <span></span><span></span><span></span><span></span><span></span>
-                                    <span></span><span></span><span></span><span></span><span></span>
+                                <div class="receipt-qr">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://www.youtube.com/watch?v=dQw4w9WgXcQ" alt="QR Code" width="80" height="80">
                                 </div>
                                 <div class="receipt-merchant">*** MERCHANT COPY ***</div>
                             </div>
@@ -1638,6 +1623,12 @@
             timerDisplay.classList.remove('stopped');
             timerDisplay.classList.add('running');
 
+            // Reset tip row color and signature name
+            document.getElementById('receiptTipRow').classList.remove('correct');
+            const signatureName = document.getElementById('signatureName');
+            signatureName.textContent = '';
+            signatureName.classList.add('hidden');
+
             // Random price between $5 and $150
             currentPrice = Math.floor(Math.random() * 14600 + 500) / 100;
             currentTip = selectedTips[Math.floor(Math.random() * selectedTips.length)];
@@ -1754,6 +1745,9 @@
                     // Correct tip - transition to total phase
                     answerPhase = 'total';
 
+                    // Mark tip row as correct (green)
+                    document.getElementById('receiptTipRow').classList.add('correct');
+
                     // Show filled tip on receipt, hide input
                     tipFilled.textContent = '$' + correctTipAmount.toFixed(2);
                     tipInputWrapper.classList.add('hidden');
@@ -1820,6 +1814,13 @@
                     correctCountEl.textContent = correctCount;
                     feedback.textContent = `Correct! (${(elapsedTime / 1000).toFixed(2)}s)`;
                     feedback.className = 'feedback show correct';
+
+                    // Show username on signature line
+                    const signatureName = document.getElementById('signatureName');
+                    if (username) {
+                        signatureName.textContent = username;
+                        signatureName.classList.remove('hidden');
+                    }
 
                     if (mcElement) {
                         mcElement.classList.add('correct');
