@@ -1674,7 +1674,11 @@
 
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
-                listEl.innerHTML = '<div class="empty-state">Error loading leaderboard</div>';
+                if (error.code === 'failed-precondition' || error.message.includes('index')) {
+                    listEl.innerHTML = '<div class="empty-state">Setting up database indexes...<br><small>Check browser console for index creation link</small></div>';
+                } else {
+                    listEl.innerHTML = '<div class="empty-state">Error loading leaderboard</div>';
+                }
             }
         }
 
