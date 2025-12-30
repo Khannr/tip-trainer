@@ -66,6 +66,30 @@
             font-size: 15px;
         }
 
+        .help-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+
+        .help-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
         /* Auth Header */
         .auth-header {
             display: flex;
@@ -531,6 +555,38 @@
         }
 
 
+        /* Quiz Controls */
+        .quiz-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 980px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #e8e8ed;
+            color: var(--text-primary);
+        }
+
+        .control-icon {
+            font-size: 16px;
+        }
+
         /* Multiple Choice Options */
         .mc-options {
             display: grid;
@@ -860,6 +916,47 @@
             color: var(--text-secondary);
         }
 
+        /* Help Modal */
+        .help-modal {
+            max-width: 320px;
+        }
+
+        .help-content {
+            margin-bottom: 20px;
+        }
+
+        .help-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .help-step:last-child {
+            border-bottom: none;
+        }
+
+        .help-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .help-step span:last-child {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.4;
+            padding-top: 4px;
+        }
+
         /* Stats View */
         .stats-grid {
             display: grid;
@@ -923,6 +1020,33 @@
         }
 
         /* Leaderboard View */
+        .leaderboard-mode-filters {
+            display: flex;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 4px;
+            margin-bottom: 12px;
+        }
+
+        .mode-filter-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .mode-filter-btn.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
         .leaderboard-filters {
             display: flex;
             gap: 8px;
@@ -1059,7 +1183,7 @@
         </div>
 
         <header>
-            <h1>Tip Trainer</h1>
+            <h1>Tip Trainer <button class="help-btn" id="helpBtn" title="How to Play">?</button></h1>
             <p class="subtitle">Practice calculating tips</p>
         </header>
 
@@ -1199,6 +1323,16 @@
                             </div>
                         </div>
 
+                        <!-- Quiz Controls -->
+                        <div class="quiz-controls">
+                            <button class="control-btn" id="resetBtn" title="New Receipt">
+                                <span class="control-icon">↻</span> Reset
+                            </button>
+                            <button class="control-btn" id="endBtn" title="End Practice">
+                                <span class="control-icon">✕</span> End
+                            </button>
+                        </div>
+
                         <!-- Multiple Choice (below receipt) -->
                         <div class="mc-options hidden" id="mcArea">
                             <button class="mc-option" data-index="0">$0.00</button>
@@ -1267,6 +1401,10 @@
         <div class="view" id="leaderboardView">
             <div class="card">
                 <div class="card-title">Fastest Times</div>
+                <div class="leaderboard-mode-filters">
+                    <button class="mode-filter-btn active" data-mode-filter="free">Free Response</button>
+                    <button class="mode-filter-btn" data-mode-filter="mc">Multiple Choice</button>
+                </div>
                 <div class="leaderboard-filters">
                     <button class="filter-btn active" data-filter="all">Overall</button>
                     <button class="filter-btn" data-filter="10">10%</button>
@@ -1278,6 +1416,32 @@
                     <div class="empty-state">Loading...</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal help-modal">
+            <h2>How to Play</h2>
+            <div class="help-content">
+                <div class="help-step">
+                    <span class="help-number">1</span>
+                    <span>Choose your tip percentages and answer mode</span>
+                </div>
+                <div class="help-step">
+                    <span class="help-number">2</span>
+                    <span>Calculate the tip amount for the bill shown</span>
+                </div>
+                <div class="help-step">
+                    <span class="help-number">3</span>
+                    <span>Then calculate the total (bill + tip)</span>
+                </div>
+                <div class="help-step">
+                    <span class="help-number">4</span>
+                    <span>Race the clock — your best times hit the leaderboard!</span>
+                </div>
+            </div>
+            <button class="modal-submit" id="helpCloseBtn">Got it!</button>
         </div>
     </div>
 
@@ -1361,6 +1525,8 @@
         let timerInterval = null;
         let timerStart = 0;
         let elapsedTime = 0;
+        let currentModeFilter = 'free';
+        let currentTipFilter = 'all';
 
         // DOM Elements
         const tipOptions = document.querySelectorAll('.tip-option');
@@ -1430,11 +1596,23 @@
                 document.getElementById(viewId).classList.add('active');
 
                 if (tab.dataset.view === 'leaderboard') {
-                    loadLeaderboard('all');
+                    loadLeaderboard(currentTipFilter, currentModeFilter);
                 } else if (tab.dataset.view === 'stats' && currentUser) {
                     loadUserStats();
                 }
             });
+        });
+
+        // Help Modal
+        const helpModal = document.getElementById('helpModal');
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            helpModal.classList.add('show');
+        });
+        document.getElementById('helpCloseBtn').addEventListener('click', () => {
+            helpModal.classList.remove('show');
+        });
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) helpModal.classList.remove('show');
         });
 
         // Auth Modal
@@ -1583,18 +1761,15 @@
         // Mode toggle
         modeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                if (btn.classList.contains('active')) return; // Already selected
+
                 modeBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 mode = btn.dataset.mode;
 
-                if (mode === 'free') {
-                    freeResponseArea.classList.remove('hidden');
-                    mcArea.classList.add('hidden');
-                    submitBtn.classList.remove('hidden');
-                } else {
-                    freeResponseArea.classList.add('hidden');
-                    mcArea.classList.remove('hidden');
-                    submitBtn.classList.add('hidden');
+                // If quiz is active, start a new question with the new mode
+                if (!quizActive.classList.contains('hidden')) {
+                    generateQuestion();
                 }
             });
         });
@@ -1610,8 +1785,23 @@
             generateQuestion();
         });
 
+        // Reset button - new receipt, restart timer
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            generateQuestion();
+        });
+
+        // End button - return to start screen
+        document.getElementById('endBtn').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            quizActive.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        });
+
         // Generate question
         function generateQuestion() {
+            // Clear any existing timer first
+            clearInterval(timerInterval);
+
             answered = false;
             answerPhase = 'tip';
             feedback.classList.remove('show');
@@ -1798,12 +1988,6 @@
 
                     submitBtn.classList.remove('hidden');
                     saveAttempt(false);
-
-                    if (mode === 'mc') {
-                        setTimeout(() => {
-                            if (answered) generateQuestion();
-                        }, 1500);
-                    }
                 }
             } else {
                 // Total phase
@@ -1852,12 +2036,6 @@
                 }
 
                 submitBtn.classList.remove('hidden');
-
-                if (mode === 'mc') {
-                    setTimeout(() => {
-                        if (answered) generateQuestion();
-                    }, 1500);
-                }
             }
         }
 
@@ -1871,6 +2049,7 @@
                         billAmount: currentPrice,
                         correct: isCorrect,
                         timeMs: elapsedTime,
+                        mode: mode,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch (error) {
@@ -1945,43 +2124,59 @@
         }
 
         // Leaderboard
+        const modeFilterBtns = document.querySelectorAll('.mode-filter-btn');
+
+        modeFilterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeFilterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentModeFilter = btn.dataset.modeFilter;
+                loadLeaderboard(currentTipFilter, currentModeFilter);
+            });
+        });
+
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                loadLeaderboard(btn.dataset.filter);
+                currentTipFilter = btn.dataset.filter;
+                loadLeaderboard(currentTipFilter, currentModeFilter);
             });
         });
 
-        async function loadLeaderboard(filter) {
+        async function loadLeaderboard(filter, modeFilter = 'free') {
             const listEl = document.getElementById('leaderboardList');
             listEl.innerHTML = '<div class="empty-state">Loading...</div>';
 
             try {
-                let query = db.collection('attempts')
+                // Build query based on filters
+                // Note: Firestore requires composite indexes for multiple where clauses
+                // We'll fetch more and filter client-side for flexibility
+                const snapshot = await db.collection('attempts')
                     .where('correct', '==', true)
                     .orderBy('timeMs', 'asc')
-                    .limit(50);
+                    .limit(200)
+                    .get();
 
+                // Filter client-side for mode and tip percentage
+                let filtered = snapshot.docs.map(doc => doc.data());
+
+                // Filter by mode
+                filtered = filtered.filter(a => a.mode === modeFilter);
+
+                // Filter by tip percentage if not 'all'
                 if (filter !== 'all') {
-                    query = db.collection('attempts')
-                        .where('correct', '==', true)
-                        .where('tipPercent', '==', parseInt(filter))
-                        .orderBy('timeMs', 'asc')
-                        .limit(50);
+                    filtered = filtered.filter(a => a.tipPercent === parseInt(filter));
                 }
 
-                const snapshot = await query.get();
-
-                if (snapshot.empty) {
+                if (filtered.length === 0) {
                     listEl.innerHTML = '<div class="empty-state">No entries yet. Be the first!</div>';
                     return;
                 }
 
                 // Get unique users' best times
                 const bestTimes = {};
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
+                filtered.forEach(data => {
                     if (!bestTimes[data.uid] || data.timeMs < bestTimes[data.uid].timeMs) {
                         bestTimes[data.uid] = data;
                     }
@@ -2023,7 +2218,7 @@
         }
 
         // Initial leaderboard load
-        loadLeaderboard('all');
+        loadLeaderboard('all', 'free');
     </script>
 </body>
 </html>
