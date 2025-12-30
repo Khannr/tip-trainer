@@ -2161,8 +2161,8 @@
                 // Filter client-side for mode and tip percentage
                 let filtered = snapshot.docs.map(doc => doc.data());
 
-                // Filter by mode
-                filtered = filtered.filter(a => a.mode === modeFilter);
+                // Filter by mode (old records without mode field go under 'mc')
+                filtered = filtered.filter(a => a.mode === modeFilter || (!a.mode && modeFilter === 'mc'));
 
                 // Filter by tip percentage if not 'all'
                 if (filter !== 'all') {
